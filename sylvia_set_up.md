@@ -1,16 +1,21 @@
-START
-LOAD market price records
-CREATE empty list for valid records
-CREATE empty list for invalid records
-FOR each record in dataset
-    READ record ID, market, commodity, unit, price and quantity
-    STANDARDIZE approved alternatives
-        wakulima → Wakulima
-        Nakuru top market → Nakuru Top Market
-        KG, Kgs, kilogram → kg
-        90 kg bag → 90kg bag
+FUNCTION LOAD_DATA()
+    RETURN hardcoded list of market price records
+END FUNCTION
 
-        
+
+FUNCTION STANDARDIZE_RECORD(record)
+    IF market = "wakulima"
+        SET market = "Wakulima"
+    IF market = "Nakuru top market"
+        SET market = "Nakuru Top Market"
+    IF unit = "KG" OR unit = "Kgs" OR unit = "kilogram"
+        SET unit = "kg"
+    IF unit = "90 kg bag"
+        SET unit = "90kg bag"
+    RETURN record
+END FUNCTION
+
+
 FUNCTION VALIDATE_RECORD(record)
     IF record ID is missing
         RETURN False, "Missing Record ID"
@@ -47,11 +52,9 @@ FUNCTION PREPARE_RECORDS()
     raw_records ← LOAD_DATA()
     CREATE empty list for valid records
     CREATE empty list for invalid records
-
     FOR each record in raw_records
         record ← STANDARDIZE_RECORD(record)
         is_valid, reason ← VALIDATE_RECORD(record)
-
         IF is_valid
             record ← CALCULATE_DERIVED_FIELDS(record)
             ADD record to valid records
@@ -60,6 +63,5 @@ FUNCTION PREPARE_RECORDS()
             ADD record to invalid records
         END IF
     END FOR
-
     RETURN valid records, invalid records
 END FUNCTION
