@@ -150,3 +150,99 @@ DISPLAY min, max, avg, cheapest_market, priciest_market,
         above_avg_count, below_avg_count
 DISPLAY matches SORTED lowest to highest price
 
+## Step 9. Compare two markets
+FUNCTION COMPARE_MARKETS():
+    DISPLAY "Available commodities"
+
+    GET list of unique commodities from valid records
+    SORT commodities alphabetically
+
+    DISPLAY commodities
+
+    INPUT selected commodity
+
+    IF selected commodity does not exist THEN
+        DISPLAY "Invalid commodity"
+        RETURN
+    END IF
+
+
+    GET all markets available for the selected commodity
+    SORT markets alphabetically
+
+    DISPLAY available markets
+
+    INPUT first market
+
+    IF first market does not exist THEN
+        DISPLAY "Invalid first market"
+        RETURN
+    END IF
+
+    INPUT second market
+
+    IF second market does not exist THEN
+        DISPLAY "Invalid second market"
+        RETURN
+    END IF
+
+    IF first market = second market THEN
+        DISPLAY "Please select two different markets"
+        RETURN
+    END IF
+
+
+    FIND record for selected commodity in first market
+    FIND record for selected commodity in second market
+
+    IF first market record does not exist THEN
+        DISPLAY "No valid record found for first market"
+        RETURN
+    END IF
+
+    IF second market record does not exist THEN
+        DISPLAY "No valid record found for second market"
+        RETURN
+    END IF
+
+
+    IF first market unit = "kg" THEN
+        first price per kg = first market price
+
+    ELSE IF first market unit = "90kg bag" THEN
+        first price per kg = first market price / 90
+    END IF
+
+
+    IF second market unit = "kg" THEN
+        second price per kg = second market price
+
+    ELSE IF second market unit = "90kg bag" THEN
+        second price per kg = second market price / 90
+    END IF
+
+
+    CALCULATE price difference =
+        ABS(first price per kg - second price per kg)
+
+
+    IF first price per kg < second price per kg THEN
+        cheaper market = first market
+
+    ELSE IF second price per kg < first price per kg THEN
+        cheaper market = second market
+
+    ELSE
+        cheaper market = "Both markets have the same price"
+    END IF
+
+
+    DISPLAY selected commodity
+    DISPLAY first market and price per kg
+    DISPLAY second market and price per kg
+    DISPLAY price difference
+    DISPLAY cheaper market
+
+END FUNCTION
+
+
