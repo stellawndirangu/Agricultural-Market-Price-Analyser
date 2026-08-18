@@ -245,4 +245,46 @@ FUNCTION COMPARE_MARKETS():
 
 END FUNCTION
 
+##Step 10: DATA SUMMARY
+
+FUNCTION DATA_SUMMARY():
+    Count all records
+    
+    Count valid records
+    
+    Count invalid records
+    
+    Set total quantity to zero
+    
+    Set total quantity in kg to zero
+    
+    Set kg record count to zero
+    
+    Set 90kg-bag record count to zero
+    
+    FOR every valid record
+    
+        Add quantity to total quantity
+    
+        Add converted quantity in kg to total quantity in kg
+    
+        IF unit is kg
+            Add 1 to kg record count
+    
+        ELSE IF unit is 90kg bag
+            Add 1 to 90kg-bag record count
+    
+    END FOR
+    
+    Display:
+        Total records
+        Valid records
+        Invalid records
+        Total quantity
+        Total quantity in kg
+        Number of kg records
+        Number of 90kg-bag records
+
+END FUNCTION
+
 
