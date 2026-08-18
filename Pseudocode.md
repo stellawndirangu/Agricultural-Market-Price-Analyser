@@ -137,18 +137,76 @@ END FUNCTION
 
 
 ## Step 8. Analyse a commodity
-READ commodity name
-    matches = [r for r in valid_records if r.commodity == name]
-    min_price  = MIN(matches.price_per_kg)
-    max_price  = MAX(matches.price_per_kg)
-    avg_price  = AVERAGE(matches.price_per_kg)
-    cheapest_market  = market of record with min_price
-    priciest_market  = market of record with max_price
-    above_avg_count  = COUNT(r.price_per_kg > avg_price)
-    below_avg_count  = COUNT(r.price_per_kg < avg_price)
-DISPLAY min, max, avg, cheapest_market, priciest_market,
-        above_avg_count, below_avg_count
-DISPLAY matches SORTED lowest to highest price
+
+IF valid_records is empty:
+    PRINT "No valid records available."
+    RETURN
+
+CALL view_commodities(valid_records)
+
+commodity = INPUT "Enter commodity to analyse: "
+commodity = REMOVE leading and trailing spaces from commodity
+
+matches = empty list
+
+FOR each record in valid_records:
+    IF record["commodity"] (case-insensitive) matches commodity:
+        ADD record to matches
+
+IF matches is empty:
+    PRINT 'No valid records found for "[commodity]".'
+    RETURN
+
+# Calculate statistics
+min_price = matches[0]["price_per_kg"]
+max_price = matches[0]["price_per_kg"]
+cheapest_market = matches[0]["market"]
+priciest_market = matches[0]["market"]
+total_price = 0
+
+FOR each record in matches:
+    IF record["price_per_kg"] < min_price:
+        min_price = record["price_per_kg"]
+        cheapest_market = record["market"]
+    
+    IF record["price_per_kg"] > max_price:
+        max_price = record["price_per_kg"]
+        priciest_market = record["market"]
+    
+    total_price = total_price + record["price_per_kg"]
+
+avg_price = total_price / LENGTH(matches)
+
+above_avg_count = 0
+below_avg_count = 0
+
+FOR each record in matches:
+    IF record["price_per_kg"] > avg_price:
+        above_avg_count = above_avg_count + 1
+    
+    IF record["price_per_kg"] < avg_price:
+        below_avg_count = below_avg_count + 1
+
+# Display analysis
+PRINT "--- ANALYSIS: [commodity] ---"
+PRINT "Minimum price : KES " + ROUND(min_price, 2) + "/kg"
+PRINT "Maximum price : KES " + ROUND(max_price, 2) + "/kg"
+PRINT "Average price : KES " + ROUND(avg_price, 2) + "/kg"
+PRINT "Cheapest market       : " + cheapest_market
+PRINT "Most expensive market : " + priciest_market
+PRINT "Records above average : " + above_avg_count
+PRINT "Records below average : " + below_avg_count
+
+# Display sorted records
+SORT matches by price_per_kg from lowest to highest
+
+PRINT "--- [commodity] PRICES (lowest to highest) ---"
+DISPLAY TABLE with columns: Market, County, Unit, Price(KES), KES/kg
+
+FOR each record in matches:
+    PRINT market, county, unit, price_kes, price_per_kg
+
+END FUNCTION
 
 ## Step 9. Compare two markets
 FUNCTION COMPARE_MARKETS():
