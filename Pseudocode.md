@@ -1,8 +1,11 @@
+```
+# Step 1 Loading the data
 FUNCTION LOAD_DATA()
     RETURN hardcoded list of market price records
 END FUNCTION
 
 
+# Step 2 Standardizing the data
 FUNCTION STANDARDIZE_RECORD(record)
     IF market = "wakulima"
         SET market = "Wakulima"
@@ -16,6 +19,7 @@ FUNCTION STANDARDIZE_RECORD(record)
 END FUNCTION
 
 
+# Step 3 Validating Records
 FUNCTION VALIDATE_RECORD(record)
     IF record ID is missing
         RETURN False, "Missing Record ID"
@@ -35,6 +39,7 @@ FUNCTION VALIDATE_RECORD(record)
 END FUNCTION
 
 
+# Step 4 Derived Values
 FUNCTION CALCULATE_DERIVED_FIELDS(record)
     IF unit = "kg"
         SET price_per_kg = price
@@ -48,13 +53,16 @@ FUNCTION CALCULATE_DERIVED_FIELDS(record)
 END FUNCTION
 
 
+# Step 5 Main Program flow
 FUNCTION PREPARE_RECORDS()
     raw_records ← LOAD_DATA()
     CREATE empty list for valid records
     CREATE empty list for invalid records
+
     FOR each record in raw_records
         record ← STANDARDIZE_RECORD(record)
         is_valid, reason ← VALIDATE_RECORD(record)
+
         IF is_valid
             record ← CALCULATE_DERIVED_FIELDS(record)
             ADD record to valid records
@@ -63,5 +71,7 @@ FUNCTION PREPARE_RECORDS()
             ADD record to invalid records
         END IF
     END FOR
+
     RETURN valid records, invalid records
 END FUNCTION
+```
