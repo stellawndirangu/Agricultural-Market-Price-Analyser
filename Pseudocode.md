@@ -74,4 +74,63 @@ FUNCTION PREPARE_RECORDS()
 
     RETURN valid records, invalid records
 END FUNCTION
+
+#Step 6 View Available Commodities
+    IF valid_records is empty THEN
+        PRINT "No valid records available."
+        RETURN
+    END IF
+
+    CREATE empty set commodities
+
+    FOR EACH record IN valid_records
+        ADD record.commodity TO commodities
+    END FOR
+
+    SET sorted_commodities = SORT(commodities) ALPHABETICALLY
+
+    PRINT "Available commodities:"
+
+    FOR EACH commodity IN sorted_commodities
+        PRINT " - " + commodity
+    END FOR
+END FUNCTION
+
+#Step 7 View Prices for a Commodity
+IF valid_records is empty:
+    PRINT "No valid records available."
+    RETURN
+
+CALL view_commodities(valid_records)
+
+commodity = INPUT "Enter commodity: "
+commodity = REMOVE leading and trailing spaces from commodity
+
+selected_records = empty list
+
+FOR each record in valid_records:
+
+    IF record["commodity"] matches commodity:
+        ADD record to selected_records
+
+IF selected_records is empty:
+    PRINT "Commodity not found."
+    RETURN
+
+FOR each record in selected_records:
+
+    IF record["unit"] is "kg":
+        price_per_kg = record["price_kes"]
+
+    ELSE IF record["unit"] is "90kg bag":
+        price_per_kg = record["price_kes"] / 90
+
+    DISPLAY market,county, unit, price and price_per_kg
+
+SORT selected_records by price_per_kg from lowest to highest
+
+PRINT "Prices for selected commodity:"
+
+END FUNCTION
 ```
+
