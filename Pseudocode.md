@@ -76,6 +76,7 @@ FUNCTION PREPARE_RECORDS()
 END FUNCTION
 
 #Step 6 View Available Commodities
+FUNCTION view_commodities(valid_records):
     IF valid_records is empty THEN
         PRINT "No valid records available."
         RETURN
@@ -97,6 +98,7 @@ END FUNCTION
 END FUNCTION
 
 #Step 7 View Prices for a Commodity
+FUNCTION view_prices_for_commodity(valid_records):
 IF valid_records is empty:
     PRINT "No valid records available."
     RETURN
