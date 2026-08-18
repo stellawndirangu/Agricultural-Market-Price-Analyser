@@ -132,5 +132,19 @@ SORT selected_records by price_per_kg from lowest to highest
 PRINT "Prices for selected commodity:"
 
 END FUNCTION
-```
+
+
+## Step 8. Analyse a commodity
+READ commodity name
+matches = [r for r in valid_records if r.commodity == name]
+min_price  = MIN(matches.price_per_kg)
+max_price  = MAX(matches.price_per_kg)
+avg_price  = AVERAGE(matches.price_per_kg)
+cheapest_market  = market of record with min_price
+priciest_market  = market of record with max_price
+above_avg_count  = COUNT(r.price_per_kg > avg_price)
+below_avg_count  = COUNT(r.price_per_kg < avg_price)
+DISPLAY min, max, avg, cheapest_market, priciest_market,
+        above_avg_count, below_avg_count
+DISPLAY matches SORTED lowest to highest price
 
