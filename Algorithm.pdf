@@ -119,6 +119,10 @@ IF selected_records is empty:
     PRINT "Commodity not found."
     RETURN
 
+SORT selected_records by price_per_kg from lowest to highest
+
+PRINT "Prices for selected commodity:"
+
 FOR each record in selected_records:
 
     IF record["unit"] is "kg":
@@ -129,14 +133,11 @@ FOR each record in selected_records:
 
     DISPLAY market,county, unit, price and price_per_kg
 
-SORT selected_records by price_per_kg from lowest to highest
-
-PRINT "Prices for selected commodity:"
-
 END FUNCTION
 
 
 ## Step 8. Analyse a commodity
+FUNCTION analyse_commodity(valid_records):
 
 IF valid_records is empty:
     PRINT "No valid records available."
@@ -345,4 +346,63 @@ FUNCTION DATA_SUMMARY():
 
 END FUNCTION
 
+##Step 11: View Invalid Records
 
+FUNCTION VIEW_INVALID_RECORDS(invalid_records):
+    IF invalid_records is empty THEN
+        PRINT "No invalid records found. All records passed validation."
+        RETURN
+    END IF
+
+    PRINT "--- INVALID RECORDS ---"
+
+    FOR each record in invalid_records
+        PRINT record["record_id"], record["market"], record["commodity"],
+              record["unit"], record["rejection_reason"]
+    END FOR
+
+    PRINT "Total invalid records: " + COUNT(invalid_records)
+
+END FUNCTION
+
+##Step 12: Main Menu (menu-control loop)
+
+FUNCTION DISPLAY_MENU():
+    PRINT "1. View available commodities"
+    PRINT "2. View prices for a commodity"
+    PRINT "3. Analyse a commodity"
+    PRINT "4. Compare two markets"
+    PRINT "5. View invalid records"
+    PRINT "6. View dataset summary"
+    PRINT "7. Exit"
+END FUNCTION
+
+FUNCTION RUN_MENU():
+    valid_records, invalid_records ← PREPARE_RECORDS()
+
+    WHILE True
+        CALL DISPLAY_MENU()
+        choice ← INPUT "Enter selection: "
+        choice ← REMOVE leading and trailing spaces from choice
+
+        IF choice = "1" THEN
+            CALL view_commodities(valid_records)
+        ELSE IF choice = "2" THEN
+            CALL view_prices_for_commodity(valid_records)
+        ELSE IF choice = "3" THEN
+            CALL analyse_commodity(valid_records)
+        ELSE IF choice = "4" THEN
+            CALL COMPARE_MARKETS(valid_records)
+        ELSE IF choice = "5" THEN
+            CALL VIEW_INVALID_RECORDS(invalid_records)
+        ELSE IF choice = "6" THEN
+            CALL DATA_SUMMARY(valid_records, invalid_records)
+        ELSE IF choice = "7" THEN
+            PRINT "Program closed."
+            BREAK
+        ELSE
+            PRINT "Invalid selection. Please try again."
+        END IF
+    END WHILE
+END FUNCTION
+```
